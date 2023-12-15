@@ -1,12 +1,5 @@
 use macroquad::prelude::*;
 
-// struct Hitbox {
-//     x: f32,
-//     y: f32,
-//     w: f32,
-//     h: f32
-// }
-
 pub struct Player {
     pub x: f32,
     pub y: f32,
@@ -15,8 +8,8 @@ pub struct Player {
     pub attack_animation: Animation,
     pub is_moving: bool,
     pub is_attacking: bool,
-    pub attack_radius: f32
-    // pub hitbox: Hitbox
+    pub attack_radius: f32,
+    pub hitbox: f32
 }
 
 pub struct Animation {

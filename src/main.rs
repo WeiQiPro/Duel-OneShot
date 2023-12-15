@@ -191,98 +191,10 @@ fn _point_on_circle(center_x: f32, center_y: f32, radius: f32, angle: f32) -> (f
     (x, y)
 }
 
-fn _draw_grid() {
-    let screen_width = screen_width();
-    let screen_height = screen_height();
-
-    let segment_width = screen_width / 10.0;
-    let segment_height = screen_height / 10.0;
-
-    let grid_color = GRAY;
-    let text_color = BLACK; // Color for the text
-    let font_size = 20.0; // Size of the font for the text
-
-    for i in 0..=10 {
-        let x = i as f32 * segment_width;
-        draw_line(x, 0.0, x, screen_height, 1.0, grid_color);
-
-        let text = format!("{}", i);
-        draw_text(&text, x + 5.0, 20.0, font_size, text_color);
-    }
-
-    for i in 0..=10 {
-        let y = i as f32 * segment_height;
-        draw_line(0.0, y, screen_width, y, 1.0, grid_color);
-
-        let text = format!("{}", i);
-        draw_text(&text, 5.0, y - 5.0, font_size, text_color);
-    }
-}
-
-fn _draw_unit_circle(px: &f32, py: &f32) {
-    let radius = 256.0 / 2.0;
-    let center_x = px + radius;
-    let center_y = py + radius;
-    let text_offset = 10.0;
-
-    for index in 0..=7 {
-        let direction_x: f32 = match index {
-            0 => 1.0,  // East
-            1 => 0.0,  // North
-            2 => 1.0,  // North East
-            3 => -1.0, // North West
-            4 => 0.0,  // South
-            5 => 1.0,  // South East
-            6 => -1.0, // South West
-            7 => -1.0, // West
-            _ => 0.0,
-        };
-        let direction_y: f32 = match index {
-            0 => 0.0,  // East
-            1 => -1.0, // North
-            2 => -1.0, // North East
-            3 => -1.0, // North West
-            4 => 1.0,  // South
-            5 => 1.0,  // South East
-            6 => 1.0,  // South West
-            7 => 0.0,  // West
-            _ => 0.0,
-        };
-
-        // Calculate angle using atan2
-        let angle = direction_x.atan2(direction_y);
-
-        let (x, y) = _point_on_circle(center_x, center_y, radius, angle);
-        draw_line(center_x, center_y, x, y, 1.0, GREEN);
-
-        let angle_degrees = angle.to_degrees();
-        let text = format!("{:.1}°", angle_degrees);
-        draw_text(&text, x - text_offset, y - text_offset, 20.0, BLACK);
-    }
-}
-
-fn _debug_visual(player: &Player, delta: f32) {
-    draw_circle_lines(
-        player.x + 256.0 / 2.0,
-        player.y + 256.0 / 2.0,
-        256.0 / 2.0,
-        1.0,
-        RED,
-    );
+fn _debug_visual(delta: f32) {
 
     let fps = if delta > 0.0 { 1.0 / delta } else { 0.0 };
     draw_text(&fps.to_string(), 20.0, 20.0, 20.0, BLACK);
-
-    let player_facing_angle = get_angle_from_direction(player.attack_animation.direction);
-
-    let player_center_x = player.x + player.attack_radius;
-    let player_center_y = player.y + player.attack_radius;
-    // Calculate the front point of the attack polygon based on the player's direction
-    let front_x = player_center_x + player.attack_radius * player_facing_angle.to_radians().cos();
-    let front_y = player_center_y + player.attack_radius * player_facing_angle.to_radians().sin();
-
-    // Visualize the attack area
-    draw_line(player_center_x, player_center_y, front_x, front_y, 1.0, RED);
 }
 
 fn window_conf() -> Conf {
@@ -375,89 +287,11 @@ async fn main() {
         attack_animation,
         is_moving: false,
         is_attacking: false,
-        attack_radius: 153.0
+        attack_radius: 153.0,
+        hitbox: 60.0
     };
 
     while !game_over {
-        if is_key_down(KeyCode::R) {
-            last_frame_time = Instant::now();
-            game_over = false;
-    
-            entities = vec![
-                RectEntity {
-                    x: center_x,
-                    y: center_y - offset_distance,
-                    w: 50.0,
-                    h: 50.0,
-                    color: GREEN,
-                }, // North
-                RectEntity {
-                    x: center_x,
-                    y: center_y + offset_distance,
-                    w: 50.0,
-                    h: 50.0,
-                    color: GREEN,
-                }, // South
-                RectEntity {
-                    x: center_x + offset_distance,
-                    y: center_y,
-                    w: 50.0,
-                    h: 50.0,
-                    color: GREEN,
-                }, // East
-                RectEntity {
-                    x: center_x - offset_distance,
-                    y: center_y,
-                    w: 50.0,
-                    h: 50.0,
-                    color: GREEN,
-                }, // West
-                RectEntity {
-                    x: center_x + offset_distance / 1.414,
-                    y: center_y - offset_distance / 1.414,
-                    w: 50.0,
-                    h: 50.0,
-                    color: GREEN,
-                }, // NorthEast
-                RectEntity {
-                    x: center_x - offset_distance / 1.414,
-                    y: center_y - offset_distance / 1.414,
-                    w: 50.0,
-                    h: 50.0,
-                    color: GREEN,
-                }, // NorthWest
-                RectEntity {
-                    x: center_x + offset_distance / 1.414,
-                    y: center_y + offset_distance / 1.414,
-                    w: 50.0,
-                    h: 50.0,
-                    color: GREEN,
-                }, // SouthEast
-                RectEntity {
-                    x: center_x - offset_distance / 1.414,
-                    y: center_y + offset_distance / 1.414,
-                    w: 50.0,
-                    h: 50.0,
-                    color: GREEN,
-                }, // SouthWest
-            ];
-        
-            let walk_texture = load_texture("src/character/Walk.png").await.unwrap();
-            let walk_animation = Animation::new(walk_texture, 24, 0.04, 0);
-            let attack_texture = load_texture("src/character/MeleeAttack.png").await.unwrap();
-            let attack_animation = Animation::new(attack_texture, 24, 0.04, 0);
-
-            player = Player {
-                x: 640.0 - 256.0 / 2.0,
-                y: 320.0 - 256.0 / 2.0,
-                v: 500.0,
-                walk_animation,
-                attack_animation,
-                is_moving: false,
-                is_attacking: false,
-                attack_radius: 156.0
-            };
-        }
        
         let now = Instant::now();
         let delta_time = now.duration_since(last_frame_time);
@@ -471,9 +305,7 @@ async fn main() {
         clear_background(WHITE);
         controller(delta_seconds, &mut player);
         
-        // _draw_grid();
-        // _draw_unit_circle(&player.x, &player.y);
-        // _debug_visual(&player, delta_seconds);
+        _debug_visual(delta_seconds);
 
         let mut targets = within_range_of_player(&player, &mut entities);
 
