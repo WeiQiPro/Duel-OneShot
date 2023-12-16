@@ -10,3 +10,4 @@ opt-level = 1
 
 [dependencies]
 macroquad = "0.4.4"
+tokio = "1.35.0"
