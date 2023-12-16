@@ -336,8 +336,6 @@ async fn main() {
     let death = Animation::create_death().await;
     let mut game = Game::new(walk, attack, death);
 
-    while game.state != StateType::Exit {
-        game.run().await; // Run the game
-    }
+    game.run().await; // Run the game
 }
 

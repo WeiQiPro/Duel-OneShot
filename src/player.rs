@@ -51,7 +51,9 @@ impl Player {
                 }
             },
             ActionType::Walk => {
-                self.walk.update(dir);
+                if velocity.x != 0.0 && velocity.y != 0.0 {
+                     self.walk.update(dir);
+                }
             },
             ActionType::Death => {
                 self.death.update(dir);
