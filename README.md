@@ -10,6 +10,3 @@ Duel - OneShot is a personal project designed as a simple PvP (Player vs Player)
 
 ## Character
 The character used in this game is sourced from [10K Studios](https://10kstudios.itch.io/top-down-boss-enemy-animated-8-directions). It's a top-down boss enemy, animated in 8 directions, adding dynamic movement and engagement to the gameplay.
-
-## Contributing
-Feel free to contribute to this project by submitting pull requests or opening issues for suggestions and bug reports.
