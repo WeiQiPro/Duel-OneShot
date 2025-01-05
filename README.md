@@ -4,7 +4,7 @@
 Duel - OneShot is a personal project designed as a simple PvP (Player vs Player) game featuring a one-hit KO mechanic.
 
 ## Features
-- **Animated High Grass:** Adds to the visual appeal and enhances the immersive experience.
+- [WIP] **Animated High Grass:** Adds to the visual appeal and enhances the immersive experience.
 - **Scene Design:** A well-crafted scene that sets the perfect backdrop for intense duels.
 - **Multiplayer Capability:** Allows players to challenge each other in a competitive environment.
 
